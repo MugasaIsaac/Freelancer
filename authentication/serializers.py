@@ -66,17 +66,18 @@ class LoginSerializer(serializers.Serializer):
     def validate(self, data):
         email = data.get('email', None)
         password = data.get('password', None)
-        user = authenticate(email=email, password=password)
-        if user is None:
+        email = authenticate(email=email)
+        password = authenticate(password=password)
+        if email is None:
             raise serializers.ValidationError({
-                'error': 'The username or password entered is wrong'
+                'error': 'The username entered is wrong'
             })
-        if not user.is_verified:
+        elif password is None:
             raise serializers.ValidationError({
-                'user': 'This account is not verified, please request a one time password'
+                'error': 'The password entered is wrong'
             })
         user = {
-            'email': user.email,
-            'token': user.token
+            'email': email,    
+            'token': email.token
             }
         return user

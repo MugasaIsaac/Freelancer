@@ -45,7 +45,7 @@ class UserManager(BaseUserManager):
             raise TypeError('Please secure your account with a password')
 
         user = self.model(
-            email=email, user_name=user_name
+            email=email, user_name=user_name, phone_number=phone_number
         )
 
         user.set_password(password)
@@ -89,14 +89,12 @@ class User(AbstractBaseUser):
     phone_regex = RegexValidator(regex=r'^\+?1?\d{10,13}$',
                                  message='Phone number must be in international format: `+256123456789`.')
 
-    first_name = models.CharField( max_length=25)
-    last_name = models.CharField( max_length=25)
-    user_name = models.CharField( max_length=25)
-    email = models.EmailField( unique=True)
-    phone_number = models.CharField(max_length=16,
-        validators=[phone_regex], unique=True)
-    role = models.CharField(verbose_name='user role',
-                            max_length=2, choices=ROLES, default='NU')
+    first_name = models.CharField(max_length=25)
+    last_name = models.CharField(max_length=25)
+    user_name = models.CharField(max_length=25, unique=True)
+    email = models.EmailField(unique=True)
+    phone_number = models.CharField(max_length=16, validators=[phone_regex], unique=True, default=False)
+    role = models.CharField(verbose_name='user role', max_length=2, choices=ROLES, default='NU')
     is_verified = models.BooleanField(default=False)
     is_company = models.BooleanField(default=True)
 
