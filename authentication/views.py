@@ -15,17 +15,24 @@ class RegistrationAPIView(APIView):
     def post(self, request):
         email = request.data.get('email')
         user_name = request.data.get('user_name')
+        phone_number = request.data.get('phone_number')
         user_email = User.objects.filter(email__iexact=email)
         user_name = User.objects.filter(user_name__iexact=user_name)
+        phone_number = User.objects.filter(phone_number__iexact=phone_number)
         if user_email.exists():
             return Response({
-                'message': 'Email already in database',
-                'success': False
+                'message': 'user with this Email already exists.',
+                'status': False
             })
         elif user_name.exists():
             return Response({
-                'message': 'Username already in database',
-                'success': False
+                'message': 'user with this Username already exists.',
+                'status': False
+            })
+        elif phone_number.exists():
+            return Response({
+                'message': 'user with this Username already exists.',
+                'status': False
             })
         else:
             serializer = RegistrationSerializer(data=request.data)
